@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HealthTrack - Tu compañero de bienestar</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --color-primary: #1abc9c; /* verde agua */
+        --color-primary-dark: #16a085;
+        --color-secondary: #2c3e50; /* azul profundo */
+        --color-bg: #f5fbff;
+        --color-white: #ffffff;
+        --color-muted: #7f8c8d;
+        --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.05);
+        --radius-lg: 16px;
+        --radius-pill: 999px;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top left, #e0f7fa, #f5fbff 45%, #e8f5e9 80%);
+        color: var(--color-secondary);
+        line-height: 1.5;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: linear-gradient(to bottom, rgba(245, 251, 255, 0.95), rgba(245, 251, 255, 0.8));
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(44, 62, 80, 0.06);
+      }
+
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.9rem 0.5rem;
+        gap: 1rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: radial-gradient(circle at 30% 20%, #a3f5d1, #1abc9c 55%, #0f766e 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-white);
+        font-weight: 700;
+        font-size: 1.1rem;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .logo-text span:first-child {
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+
+      .logo-text span:last-child {
+        font-size: 0.78rem;
+        color: var(--color-muted);
+      }
+
+      .nav-links {
+        display: none;
+        list-style: none;
+        gap: 1.5rem;
+        font-size: 0.95rem;
+      }
+
+      .nav-links a {
+        position: relative;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #1abc9c, #2ecc71);
+        transition: width 0.2s ease;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .nav-cta {
+        display: none;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.65rem 1.35rem;
+        border-radius: var(--radius-pill);
+        border: none;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+        white-space: nowrap;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #1abc9c, #2ecc71);
+        color: var(--color-white);
+        box-shadow: 0 12px 25px rgba(26, 188, 156, 0.25);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 28px rgba(26, 188, 156, 0.3);
+      }
+
+      .btn-outline {
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--color-secondary);
+        border: 1px solid rgba(44, 62, 80, 0.12);
+      }
+
+      .btn-outline:hover {
+        background: var(--color-white);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .menu-toggle {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        padding: 0.25rem;
+      }
+
+      .menu-toggle span {
+        width: 20px;
+        height: 2px;
+        border-radius: 999px;
+        background-color: var(--color-secondary);
+      }
+
+      .hero {
+        padding: 3.2rem 0 2.8rem;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.4rem;
+        align-items: center;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 1.4rem;
+      }
+
+      .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0.5rem 0.3rem 0.3rem;
+        border-radius: var(--radius-pill);
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(26, 188, 156, 0.25);
+        width: fit-content;
+        font-size: 0.78rem;
+        color: var(--color-muted);
+      }
+
+      .hero-pill-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: conic-gradient(from 180deg, #1abc9c, #2ecc71, #1abc9c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-pill-dot span {
+        width: 7px;
+        height: 7px;
+        border-radius: inherit;
+        background-color: var(--color-white);
+      }
+
+      .hero h1 {
+        font-size: 1.9rem;
+        letter-spacing: -0.03em;
+      }
+
+      .hero h1 span {
+        background: linear-gradient(135deg, #1abc9c, #2c3e50);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero p {
+        color: var(--color-muted);
+        font-size: 0.98rem;
+        max-width: 34rem;
+      }
+
+      .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .hero-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.8rem;
+        color: var(--color-muted);
+      }
+
+      .hero-meta-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background-color: #2ecc71;
+        box-shadow: 0 0 0 5px rgba(46, 204, 113, 0.25);
+      }
+
+      .hero-visual {
+        position: relative;
+        max-width: 420px;
+        justify-self: center;
+      }
+
+      .phone-frame {
+        position: relative;
+        border-radius: 30px;
+        padding: 0.75rem;
+        background: linear-gradient(145deg, #e0f2f1, #e3f2fd);
+        box-shadow: 0 25px 55px rgba(44, 62, 80, 0.20);
+      }
+
+      .phone-inner {
+        background-color: var(--color-white);
+        border-radius: 24px;
+        padding: 1.1rem 0.9rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      .phone-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--color-muted);
+      }
+
+      .phone-chip {
+        padding: 0.15rem 0.5rem;
+        border-radius: var(--radius-pill);
+        background: rgba(26, 188, 156, 0.1);
+        color: var(--color-primary-dark);
+        font-size: 0.7rem;
+      }
+
+      .phone-metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .metric-card {
+        padding: 0.55rem 0.7rem;
+        border-radius: 14px;
+        background: #f8fafc;
+      }
+
+      .metric-label {
+        font-size: 0.65rem;
+        color: var(--color-muted);
+        margin-bottom: 0.15rem;
+      }
+
+      .metric-value {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .metric-badge {
+        font-size: 0.7rem;
+        margin-top: 0.15rem;
+      }
+
+      .metric-badge.positive {
+        color: #16a34a;
+      }
+
+      .metric-badge.neutral {
+        color: #2563eb;
+      }
+
+      .progress-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        margin-top: 0.3rem;
+      }
+
+      .progress-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      .progress-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.7rem;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background-color: #e5e7eb;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #22c55e, #2dd4bf);
+        width: 72%;
+      }
+
+      .hero-floating-card {
+        position: absolute;
+        right: -8px;
+        bottom: -18px;
+        padding: 0.55rem 0.7rem;
+        border-radius: 14px;
+        background: rgba(44, 62, 80, 0.96);
+        color: #e2fbe8;
+        font-size: 0.7rem;
+        box-shadow: 0 18px 35px rgba(15, 23, 42, 0.5);
+      }
+
+      .hero-floating-card strong {
+        display: block;
+        font-size: 0.8rem;
+        margin-bottom: 0.1rem;
+      }
+
+      .hero-floating-card span {
+        color: #a7f3d0;
+      }
+
+      .section {
+        padding: 2.8rem 0;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .section-subtitle {
+        color: var(--color-muted);
+        font-size: 0.95rem;
+        max-width: 32rem;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.4rem;
+      }
+
+      .feature-card {
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: var(--radius-lg);
+        padding: 1.15rem 1.1rem;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid rgba(44, 62, 80, 0.04);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .feature-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        background: radial-gradient(circle at 30% 20%, #d1fae5, #6ee7b7);
+      }
+
+      .feature-title {
+        font-weight: 600;
+        font-size: 1.02rem;
+      }
+
+      .feature-text {
+        font-size: 0.92rem;
+        color: var(--color-muted);
+      }
+
+      .feature-tag {
+        margin-top: 0.15rem;
+        font-size: 0.8rem;
+        color: #0f766e;
+      }
+
+      .signup-section {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .signup-copy {
+        max-width: 30rem;
+      }
+
+      .signup-copy h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .signup-copy p {
+        color: var(--color-muted);
+        font-size: 0.96rem;
+      }
+
+      .signup-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
+        font-size: 0.78rem;
+      }
+
+      .badge {
+        padding: 0.25rem 0.7rem;
+        border-radius: var(--radius-pill);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(44, 62, 80, 0.06);
+      }
+
+      .signup-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 20px;
+        padding: 1.5rem 1.4rem;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+        border: 1px solid rgba(44, 62, 80, 0.08);
+      }
+
+      .signup-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .signup-card p {
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        margin-bottom: 0.9rem;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      label {
+        font-size: 0.8rem;
+        color: var(--color-secondary);
+      }
+
+      input {
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        padding: 0.55rem 0.7rem;
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        background-color: #f9fafb;
+      }
+
+      input:focus {
+        border-color: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+        background-color: #ffffff;
+      }
+
+      .helper-text {
+        font-size: 0.75rem;
+        color: var(--color-muted);
+      }
+
+      .form-footer {
+        margin-top: 0.4rem;
+        font-size: 0.76rem;
+        color: var(--color-muted);
+      }
+
+      .form-footer a {
+        color: #0f766e;
+      }
+
+      footer {
+        margin-top: 1.5rem;
+        border-top: 1px solid rgba(44, 62, 80, 0.08);
+        padding: 1.2rem 0 1.5rem;
+        background: rgba(248, 250, 252, 0.95);
+      }
+
+      .footer-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        align-items: center;
+        text-align: center;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .social-links a {
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        background-color: #ffffff;
+        transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+
+      .social-links a:hover {
+        background: linear-gradient(135deg, #1abc9c, #2ecc71);
+        color: #ffffff;
+        border-color: transparent;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        justify-content: center;
+      }
+
+      .footer-links a {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-underline-offset: 3px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (min-width: 640px) {
+        .hero {
+          padding-top: 3.6rem;
+          padding-bottom: 3.2rem;
+        }
+
+        .hero h1 {
+          font-size: 2.1rem;
+        }
+
+        .features-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .signup-section {
+          grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        }
+      }
+
+      @media (min-width: 768px) {
+        .hero-grid {
+          grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+          gap: 2.8rem;
+        }
+      }
+
+      @media (min-width: 900px) {
+        .nav-links {
+          display: flex;
+        }
+
+        .nav-cta {
+          display: flex;
+        }
+
+        .menu-toggle {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 4rem;
+          padding-bottom: 3.5rem;
+        }
+
+        .hero h1 {
+          font-size: 2.45rem;
+        }
+
+        .hero-visual {
+          justify-self: end;
+        }
+
+        .footer-inner {
+          flex-direction: row;
+          justify-content: space-between;
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <a href="#inicio" class="logo" aria-label="HealthTrack inicio">
+          <div class="logo-icon">HT</div>
+          <div class="logo-text">
+            <span>HealthTrack</span>
+            <span>Hábitos saludables, día a día</span>
+          </div>
+        </a>
+
+        <nav aria-label="Navegación principal">
+          <ul class="nav-links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#caracteristicas">Características</a></li>
+            <li><a href="#registro">Registro</a></li>
+            <li><a href="#descarga">Descarga</a></li>
+          </ul>
+        </nav>
+
+        <div class="nav-cta">
+          <a href="#registro" class="btn btn-outline">Iniciar sesión</a>
+          <a href="#registro" class="btn btn-primary">Crear cuenta</a>
+        </div>
+
+        <button class="menu-toggle" aria-label="Abrir menú de navegación">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section id="inicio" class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <div class="hero-pill">
+              <div class="hero-pill-dot"><span></span></div>
+              <span>Cuida tu salud con pequeñas acciones diarias</span>
+            </div>
+
+            <h1>
+              Tu nueva rutina de bienestar empieza con
+              <span>HealthTrack</span>
+            </h1>
+
+            <p>
+              Registra tus hábitos, monitorea tu progreso y recibe recordatorios inteligentes para mantenerte activo, hidratado y descansado. Todo desde una sola app.
+            </p>
+
+            <div class="hero-cta">
+              <a href="#registro" class="btn btn-primary">Comenzar gratis</a>
+              <a href="#caracteristicas" class="btn btn-outline">Ver cómo funciona</a>
+              <div class="hero-meta">
+                <div class="hero-meta-dot"></div>
+                <span>Configura tu plan en menos de 1 minuto</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-hidden="true">
+            <div class="phone-frame">
+              <div class="phone-inner">
+                <div class="phone-header">
+                  <span>Hoy</span>
+                  <span class="phone-chip">Tu día se ve equilibrado</span>
+                </div>
+
+                <div class="phone-metrics">
+                  <div class="metric-card">
+                    <div class="metric-label">Pasos</div>
+                    <div class="metric-value">8.420</div>
+                    <div class="metric-badge positive">+1.230 vs. ayer</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-label">Agua</div>
+                    <div class="metric-value">1,9 L</div>
+                    <div class="metric-badge neutral">Objetivo: 2,5 L</div>
+                  </div>
+                </div>
+
+                <div class="progress-list">
+                  <div class="progress-item">
+                    <div class="progress-top">
+                      <span>Horas de sueño</span>
+                      <span>7 h 35 min</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 78%"></div>
+                    </div>
+                  </div>
+
+                  <div class="progress-item">
+                    <div class="progress-top">
+                      <span>Hábitos completados</span>
+                      <span>5 / 7</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 65%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-floating-card">
+              <strong>Buenas noticias</strong>
+              <span>Estás cumpliendo tu objetivo 4 días seguidos</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="caracteristicas" class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Todo lo que necesitas para cuidar tu bienestar</h2>
+            <p class="section-subtitle">
+              HealthTrack combina seguimiento de hábitos, estadísticas claras y recordatorios personalizados para ayudarte a construir rutinas saludables sostenibles.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <article class="feature-card">
+              <div class="feature-icon" aria-hidden="true">✓</div>
+              <h3 class="feature-title">Seguimiento simple de hábitos</h3>
+              <p class="feature-text">
+                Registra agua, sueño, movimiento, descanso digital y más, con controles rápidos pensados para el día a día.
+              </p>
+              <span class="feature-tag">Diseñado para usarse en segundos</span>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon" aria-hidden="true">📊</div>
+              <h3 class="feature-title">Estadísticas claras</h3>
+              <p class="feature-text">
+                Visualiza tu progreso semanal y mensual, identifica patrones y celebra tus logros con métricas fáciles de entender.
+              </p>
+              <span class="feature-tag">Tus datos, convertidos en información útil</span>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon" aria-hidden="true">⏰</div>
+              <h3 class="feature-title">Recordatorios inteligentes</h3>
+              <p class="feature-text">
+                Recibe notificaciones en los momentos clave para mantenerte hidratado, moverte un poco o desconectarte a tiempo.
+              </p>
+              <span class="feature-tag">Tú eliges el ritmo y la intensidad</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="registro" class="section">
+        <div class="container signup-section">
+          <div class="signup-copy">
+            <h2>Da el primer paso hoy</h2>
+            <p>
+              Crea tu cuenta gratuita y comienza a registrar tus hábitos en minutos. Sin tarjetas, sin compromiso. Solo tú y tus objetivos de bienestar.
+            </p>
+            <div class="signup-badges">
+              <span class="badge">✔ Sin costo en el plan básico</span>
+              <span class="badge">✔ Disponible para iOS y Android</span>
+              <span class="badge">✔ Puedes darte de baja cuando quieras</span>
+            </div>
+          </div>
+
+          <div class="signup-card" aria-label="Formulario de registro HealthTrack">
+            <h3>Crear cuenta</h3>
+            <p>Completa tus datos y te enviaremos un enlace para activar tu cuenta.</p>
+
+            <form action="#" method="post">
+              <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Ej: Ana Pérez" required />
+              </div>
+
+              <div class="form-group">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required />
+                <p class="helper-text">Solo lo usaremos para enviarte información sobre tu cuenta.</p>
+              </div>
+
+              <div class="form-group">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" name="contrasena" minlength="8" placeholder="Mínimo 8 caracteres" required />
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.3rem">Crear cuenta gratis</button>
+
+              <p class="form-footer">
+                Al registrarte aceptas nuestras
+                <a href="#">Condiciones de uso</a>
+                y
+                <a href="#">Política de privacidad</a>.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="descarga" class="section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Próximamente en tu tienda de apps favorita</h2>
+            <p class="section-subtitle">
+              HealthTrack estará disponible para iOS y Android. Déjanos tu correo y serás de las primeras personas en recibir el enlace de descarga cuando lancemos la app.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> HealthTrack. Todos los derechos reservados.</p>
+
+        <div class="social-links" aria-label="Enlaces a redes sociales">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Twitter">X</a>
+        </div>
+
+        <div class="footer-links">
+          <a href="#">Soporte</a>
+          <a href="#">Centro de ayuda</a>
+          <a href="#">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const yearSpan = document.getElementById("year");
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+    </script>
+  </body>
+</html>
